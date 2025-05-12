@@ -1,6 +1,5 @@
 .App {
   text-align: center;
-  padding: 20px;
 }
 
 .App-header {
@@ -8,4 +7,20 @@
   color: white;
   padding: 20px;
   margin-bottom: 20px;
+}
+
+main {
+  max-width: 1200px;
+  padding: 0 10px;
+}
+
+section {
+  margin-bottom: 30px;
+}
+
+footer {
+  margin-top: 30px;
+  padding: 10px;
+  background-color: #e5d8d8;
+  font-size: 0.8rem;
 }
