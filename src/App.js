@@ -36,7 +36,7 @@ const App = () => {
       <main className="flex-grow px-6 py-8">
         <section aria-label="Scholar Search">
           <h2 className="text-xl font-semibold mb-3">Find Academic Profiles</h2>
-          <p className="text-sm text-gray-600 mb-6"> Search your scholr of interest to explore their research.</p>
+          <p className="text-sm text-gray-600 mb-6"> Search your scholar of interest to explore their research.</p>
 
           <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 items-stretch">
             <input
