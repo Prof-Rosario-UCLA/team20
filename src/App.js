@@ -10,7 +10,8 @@ const App = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!query) return;
+    const trimmed = query.trim();
+    if (!trimmed) return;
 
     setLoading(true);
     setError(null);
@@ -57,7 +58,7 @@ const App = () => {
         </section>
 
         {error && (
-          <div className="mt-8 p-4 bg-red-50">
+          <div className="mt-8 p-4 bg-red-50 text-red-700 border border-red-200 rounded-lg">
             <p>{error}</p>
           </div>
         )}
