@@ -17,7 +17,7 @@ const App = () => {
     setError(null);
     
     try {
-      const scholarData = await fetchScholars(query);
+      const scholarData = await fetchScholars(trimmed);
       setResults(scholarData);
     } catch (err) {
       console.error('Failed to fetch results:', err);
