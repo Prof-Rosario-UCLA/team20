@@ -1,29 +1,26 @@
 // App.js
 import React, { useState } from 'react';
+import { fetchScholars } from './openAlex/api';
 
 const App = () => {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState([]);
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const trimmed = query.trim();
-    if (!trimmed) return;
+    if (!query) return;
 
     setLoading(true);
+    setError(null);
+    
     try {
-      // does loading work
-      // await new Promise((res) => setTimeout(res, 1000));
-
-      // Placeholder data
-      setResults([
-        {
-          id: 1, name: 'Yuri Kim', university: 'UCLA', research_interest: 'Computer Science',
-        },
-      ]);
+      const scholarData = await fetchScholars(query);
+      setResults(scholarData);
     } catch (err) {
       console.error('Failed to fetch results:', err);
+      setError('Failed to fetch scholars');
     } finally {
       setLoading(false);
     }
@@ -59,6 +56,12 @@ const App = () => {
           </form>
         </section>
 
+        {error && (
+          <div className="mt-8 p-4 bg-red-50">
+            <p>{error}</p>
+          </div>
+        )}
+
         {loading && (
           <div className="mt-8 text-center">
             <p className="text-gray-500">Loading the profiles...</p>
@@ -69,17 +72,23 @@ const App = () => {
           <section className="mt-10" aria-label="Search Results">
             <h3 className="text-lg font-semibold mb-4">Results</h3>
             <ul className="space-y-4">
-              {results.map((r) => (
-                <li key={r.id} className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm">
-                  <h4 className="text-md font-bold">{r.name}</h4>
-                  <p className="text-sm">{r.university}</p>
-                  <p className="text-sm text-gray-600">Research Interest: {r.research_interest}</p>
+              {results.map((scholar) => (
+                <li key={scholar.id} className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm">
+                  <h4 className="text-md font-bold">{scholar.display_name}</h4>
+                  <p className="text-sm">{scholar.last_known_institution?.display_name || 'Institution unknown'}</p>
+                  <p className="text-sm text-gray-600">Works count: {scholar.works_count || 0}</p>
+                  <p className="text-sm text-gray-600">Citations: {scholar.cited_by_count || 0}</p>
                 </li>
               ))}
             </ul>
           </section>
         )}
 
+        {!loading && query && results.length === 0 && (
+          <div className="mt-8 text-center">
+            <p className="text-gray-500">No scholars found.</p>
+          </div>
+        )}
       </main>
       
       <footer className="p-4 mt-4 bg-gray-100">
