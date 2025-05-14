@@ -27,6 +27,8 @@ const App = () => {
     }
   };
 
+  const clearOptions = () => { setQuery(''); setResults([]); setError(null); };
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 text-gray-800">
       <header className="bg-blue-700 text-white py-5 px-6 shadow">
@@ -47,13 +49,24 @@ const App = () => {
               onChange={(e) => setQuery(e.target.value)}
               aria-label="Search scholars"
             />
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition disabled:opacity-50"
-            >
-              {loading ? 'Searching...' : 'Search'}
-            </button>
+            <div className="flex justify-end items-center gap-2 mt-4">
+              {query && (
+                <button
+                  type="button"
+                  onClick={clearOptions}
+                  className="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
+                >
+                  Clear
+                </button>
+              )}
+              <button
+                type="submit"
+                disabled={loading}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition disabled:opacity-50"
+              >
+                {loading ? 'Searching...' : 'Search'}
+              </button>
+            </div>
           </form>
         </section>
 
