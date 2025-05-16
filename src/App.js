@@ -1,21 +1,32 @@
 // App.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { fetchScholars } from './openAlex/api';
 import ScholarDetail from './ScholarDetail';
-import { authorize, LoginForm } from './auth/auth';
+import { authorize, LoginForm, CookieNotice } from './auth/auth';
 
 const App = () => {
-  const { userID, loginVisible, setLoginVisible, handleLogin, handleLogout } = authorize();
+  const { userID, loginVisible, setLoginVisible, handleLogin, handleLogout, askAcceptCookies, cookieAccepted } = authorize();
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState([]);
   const [error, setError] = useState(null);
   const [activeScholarId, setActiveScholarId] = useState(null);
+  const [csrfToken, setCsrfToken] = useState('');
+
+  useEffect(() => {
+    const token = sessionStorage.getItem('csrf');
+    setCsrfToken(token || '');
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const trimmed = query.trim();
     if (!trimmed) return;
+
+    if (csrfToken !== sessionStorage.getItem('csrf')) {
+      setError('Security validation failed');
+      return;
+    }
 
     setLoading(true);
     setError(null);
@@ -49,6 +60,8 @@ const App = () => {
           onCancel={() => setLoginVisible(false)} 
         />
       )}
+      
+      {askAcceptCookies && (<CookieNotice onAccept={cookieAccepted} />)}
 
       <header className="bg-blue-700 text-white py-2 px-4 shadow flex items-center justify-between">
         <h1 className="text-xl font-bold truncate">Academic Scholars Profile Explorer</h1>
@@ -82,6 +95,8 @@ const App = () => {
               <p className="text-sm text-gray-600 mb-2">Search your scholar of interest.</p>
 
               <form onSubmit={handleSubmit} className="flex gap-3 items-center">
+                <input type="hidden" name="_csrf" value={csrfToken} />
+                
                 <input
                   type="text"
                   className="flex-grow h-8 px-2 border border-gray-300 rounded-lg"
@@ -133,7 +148,9 @@ const App = () => {
                       className="p-5 border border-gray-200 rounded-lg bg-white shadow-sm hover:bg-blue-50 cursor-pointer"
                       onClick={() => selectScholar(scholar)}
                     >
-                      <h4 className="text-md font-bold truncate">{scholar.display_name}</h4>
+                      <h4 className="text-md font-bold truncate">
+                        {scholar.display_name.replace(/[<>]/g, '')}
+                      </h4>
                       <div className="flex justify-between text-xs text-gray-600 mt-1">
                         <span>Pubs: {scholar.works_count}</span>
                         <span>Citations: {scholar.cited_by_count}</span>
