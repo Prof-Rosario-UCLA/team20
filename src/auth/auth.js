@@ -136,6 +136,10 @@ export const authorize = () => {
 
     const token = readCookie('auth_token');
 
+    if(!token){
+      return;
+    }
+
     try {
       const decoded = JSON.parse(atob(token));
 
