@@ -2,8 +2,10 @@
 import React, { useState } from 'react';
 import { fetchScholars } from './openAlex/api';
 import ScholarDetail from './ScholarDetail';
+import { authorize, LoginForm } from './auth/auth';
 
 const App = () => {
+  const { userID, loginVisible, setLoginVisible, handleLogin, handleLogout } = authorize();
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState([]);
@@ -42,8 +44,34 @@ const App = () => {
 
   return (
     <div className="fixed inset-0 flex flex-col bg-gray-50 text-gray-800 overflow-hidden">
-      <header className="bg-blue-700 text-white py-2 px-4 shadow flex items-center">
+      {loginVisible && ( <LoginForm 
+          onLogin={handleLogin} 
+          onCancel={() => setLoginVisible(false)} 
+        />
+      )}
+
+      <header className="bg-blue-700 text-white py-2 px-4 shadow flex items-center justify-between">
         <h1 className="text-xl font-bold truncate">Academic Scholars Profile Explorer</h1>
+        <div>
+          {userID ? (
+            <div className="flex items-center">
+              <span className="mr-2">User: {userID.id}</span>
+              <button 
+                onClick={handleLogout}
+                className="bg-blue-700 px-4 py-2 hover:bg-blue-800"
+              >
+                Log Out
+              </button>
+            </div>
+          ) : (
+            <button 
+              onClick={() => setLoginVisible(true)}
+              className="bg-blue-700 px-4 py-2 rounded hover:bg-blue-800"
+            >
+              Log In
+            </button>
+          )}
+        </div>
       </header>
 
       <main className="flex-grow flex flex-col p-3 overflow-hidden">
