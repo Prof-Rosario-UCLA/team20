@@ -47,7 +47,7 @@ const ScholarDetail = ({ scholarId, onBack }) => {
           <p className="font-medium">Citations: <span className="font-normal">{data.cited_by_count}</span></p>
         </div>
         <div className="flex-1 p-4 bg-slate-50 rounded">
-          <p className="font-medium mb-1">Top Concepts:</p>
+          <p className="font-medium mb-1">Research Interests:</p>
           {data.x_concepts?.length > 0 ? (
             <ul className="list-disc list-inside text-sm text-gray-700">
               {data.x_concepts.slice(0, 5).map((c, i) => <li key={i}>{c.display_name}</li>)}
@@ -59,7 +59,7 @@ const ScholarDetail = ({ scholarId, onBack }) => {
       </div>
 
       <div>
-        <h3 className="text-lg font-semibold mb-2">Recent Works</h3>
+        <h3 className="text-lg font-semibold mb-2">Recent Publications</h3>
         {data.works?.length > 0 ? (
           <ul className="space-y-2">
             {data.works.map((w, i) => (

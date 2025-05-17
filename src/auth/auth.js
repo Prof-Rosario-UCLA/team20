@@ -4,12 +4,12 @@ import React, { useState, useEffect } from 'react';
 export const CookieNotice = ({ onConfirm }) => {
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-blue-900 text-white p-3 flex items-center justify-between">
-      <p className="text-sm">Cookies are used to handle login.</p>
+      <p className="text-sm">Cookies are used in this app.</p>
       <button
         onClick={onConfirm}
         className="bg-white text-blue-900 px-3 py-1 rounded text-sm"
       >
-        Got it
+        Accept
       </button>
     </div>
   );
