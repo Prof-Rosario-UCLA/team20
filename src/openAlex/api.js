@@ -1,3 +1,5 @@
+// api tech doc
+// https://docs.openalex.org/api-entities/authors/author-object
 export const fetchScholars = async (searchTerm) => {
   if (!searchTerm.trim()) return [];
 
