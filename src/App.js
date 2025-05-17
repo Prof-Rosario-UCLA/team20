@@ -5,7 +5,7 @@ import ScholarDetail from './ScholarDetail';
 import { authorize, LoginForm, CookieNotice } from './auth/auth';
 
 const App = () => {
-  const { userID, loginVisible, setLoginVisible, handleLogin, handleLogout, askAcceptCookies, cookieAccepted } = authorize();
+  const { userID, loginVisible, setLoginVisible, handleLogin, handleLogout, askAcceptCookies, acceptCookies } = authorize();
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState([]);
@@ -61,7 +61,7 @@ const App = () => {
         />
       )}
       
-      {askAcceptCookies && (<CookieNotice onAccept={cookieAccepted} />)}
+      {askAcceptCookies && (<CookieNotice onAccept={acceptCookies} />)}
 
       <header className="bg-blue-700 text-white py-2 px-4 shadow flex items-center justify-between">
         <h1 className="text-xl font-bold truncate">Academic Scholars Profile Explorer</h1>
