@@ -1,6 +1,7 @@
 // ScholarDetail.js
 import React, { useEffect, useState } from 'react';
 import { getScholarInfo } from './openAlex/api';
+import CitationChart from './canvasViz';
 
 const ScholarDetail = ({ scholarId, onBack }) => {
   const [data, setData] = useState(null);
@@ -43,7 +44,7 @@ const ScholarDetail = ({ scholarId, onBack }) => {
 
       <div className="flex flex-col md:flex-row gap-4 mb-6">
         <div className="flex-1 p-4 bg-slate-50 rounded">
-          <p className="font-medium">Works: <span className="font-normal">{data.works_count}</span></p>
+          <p className="font-medium">Publications: <span className="font-normal">{data.works_count}</span></p>
           <p className="font-medium">Citations: <span className="font-normal">{data.cited_by_count}</span></p>
         </div>
         <div className="flex-1 p-4 bg-slate-50 rounded">
@@ -57,6 +58,8 @@ const ScholarDetail = ({ scholarId, onBack }) => {
           )}
         </div>
       </div>
+      
+      <CitationChart scholarData={data} />
 
       <div>
         <h3 className="text-lg font-semibold mb-2">Recent Publications</h3>
