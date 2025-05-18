@@ -1,5 +1,6 @@
 const express = require('express');
 const helmet = require('helmet');
+const cors = require('cors');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 const app = express();
@@ -7,6 +8,7 @@ const PORT = process.env.PORT || 5001;
 
 app.use(express.json());
 app.use(helmet());
+app.use(cors());
 
 const openalex_address = 'https://api.openalex.org';
 
