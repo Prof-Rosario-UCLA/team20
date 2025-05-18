@@ -1,27 +1,33 @@
 // api tech doc
 // https://docs.openalex.org/api-entities/authors/author-object
+const BACKEND_ADDR = process.env.APP_ADDRESS || 'http://localhost:5001/api';
+
 export const fetchScholars = async (searchTerm) => {
   if (!searchTerm.trim()) return [];
 
-  const query = encodeURIComponent(searchTerm.trim());
-  const url = `https://api.openalex.org/authors?filter=display_name.search:${query}&per_page=10`;
+  const encoded = encodeURIComponent(searchTerm.trim());
+  const endpoint = `${BACKEND_ADDR}/scholars?query=${encoded}`;
 
-  const response = await fetch(url);
+  const response = await fetch(endpoint);
+
+  if (!response.ok) {
+    throw new Error(`Failed to get scholars: ${response.status}`);
+  }
+
   const data = await response.json();
-  return data.results ?? [];
+  return data.results || [];
 };
 
-export const getScholarInfo = async (id) => {
-  if (!id) throw new Error('Missing scholar ID');
+export const getScholarInfo = async (scholarId) => {
+  if (!scholarId) {
+    throw new Error('Scholar ID must be provided');
+  }
 
-  const base = 'https://api.openalex.org';
-  const [infoRes, worksRes] = await Promise.all([
-    fetch(`${base}/authors/${id}`),
-    fetch(`${base}/works?filter=author.id:${id}&per_page=5&sort=publication_date:desc`)
-  ]);
+  const res = await fetch(`${BACKEND_ADDR}/scholars/${scholarId}`);
 
-  const info = await infoRes.json();
-  const works = await worksRes.json();
+  if (!res.ok) {
+    throw new Error(`Failed to get scholar details: ${res.status}`);
+  }
 
-  return { ...info, works: works.results || [] };
+  return await res.json();
 };
