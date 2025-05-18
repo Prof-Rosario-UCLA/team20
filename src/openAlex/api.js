@@ -23,7 +23,8 @@ export const getScholarInfo = async (scholarId) => {
     throw new Error('Scholar ID must be provided');
   }
 
-  const res = await fetch(`${BACKEND_ADDR}/scholars/${scholarId}`);
+  const replaceId = scholarId.replace('https://openalex.org/', '')
+  const res = await fetch(`${BACKEND_ADDR}/scholars/${replaceId}`);
 
   if (!res.ok) {
     throw new Error(`Failed to get scholar details: ${res.status}`);
