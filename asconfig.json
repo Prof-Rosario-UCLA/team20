@@ -1,0 +1,21 @@
+{
+  "targets": {
+    "debug": {
+      "outFile": "public/assembly/ten-citations.wasm",
+      "textFile": "public/assembly/ten-citations.wat",
+      "sourceMap": true,
+      "debug": true
+    },
+    "release": {
+      "outFile": "public/assembly/ten-citations.wasm",
+      "optimizeLevel": 3,
+      "shrinkLevel": 1,
+      "converge": false,
+      "noAssert": false
+    }
+  },
+  "options": {
+    "importMemory": true,
+    "initialMemory": 2
+  }
+}

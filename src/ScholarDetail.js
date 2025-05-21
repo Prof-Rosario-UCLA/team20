@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { getScholarInfo } from './openAlex/api';
 import CitationChart from './canvasViz';
+import WasmStats from './wasmStats';
 
 const ScholarDetail = ({ scholarId, onBack }) => {
   const [data, setData] = useState(null);
@@ -63,6 +64,8 @@ const ScholarDetail = ({ scholarId, onBack }) => {
           )}
         </div>
       </div>
+      
+      <WasmStats scholarData={data} />
       
       <div className="flex border-b mb-2">
         <button 

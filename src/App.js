@@ -153,7 +153,7 @@ const App = () => {
                       </h4>
                       <div className="flex justify-between text-xs text-gray-600 mt-1">
                         <span>Pubs: {scholar.works_count}</span>
-                        <span>Citations: {scholar.cited_by_count}</span>
+                        <span>Total Citations {scholar.cited_by_count}</span>
                       </div>
                     </li>
                   ))}
