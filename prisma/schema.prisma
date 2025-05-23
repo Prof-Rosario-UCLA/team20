@@ -18,6 +18,7 @@ model Favorite {
   id        String   @id @default(uuid())
   accountId String
   scholarId String
+  scholarName String?
 
   account   Account  @relation(fields: [accountId], references: [id])
 
