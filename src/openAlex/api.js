@@ -8,26 +8,27 @@ const BACKEND_ADDR = process.env.APP_ADDRESS || 'http://localhost:5001/api';
 export const fetchScholars = async (searchTerm) => {
   if (!searchTerm.trim()) return [];
 
-  const cachedResults = cache.getFetchCache(searchTerm.trim());
+  const trimmedTerm = searchTerm.trim();
+  const cachedResults = cache.getFetchCache(trimmedTerm);
   if (cachedResults) {
-    console.log('[Cache] fetched from cache');
+    console.log(`[Cache] fetched from cache for keyword: "${trimmedTerm}"`);
     return cachedResults;
   }
 
-  console.log('[OpenAlex] fetched from openalex api');
+  console.log(`[OpenAlex] fetched from openalex api for keyword: "${trimmedTerm}"`);
 
-  const encoded = encodeURIComponent(searchTerm.trim());
+  const encoded = encodeURIComponent(trimmedTerm);
   const endpoint = `${BACKEND_ADDR}/scholars?query=${encoded}`;
 
   const response = await fetch(endpoint);
 
   if (!response.ok) {
-    throw new Error(`Failed to get scholars: ${response.status}`);
+    throw new Error(`Failed to get scholars for "${trimmedTerm}": ${response.status}`);
   }
 
   const data = await response.json();
   const results = data.results || [];
-  cache.cacheFetch(searchTerm.trim(), results);
+  cache.cacheFetch(trimmedTerm, results);
   return results;
 };
 
@@ -39,15 +40,15 @@ export const getScholarInfo = async (scholarId) => {
   const replaceId = scholarId.replace('https://openalex.org/', '');
   const cachedScholar = cache.getScholarsCache(replaceId);
   if (cachedScholar) {
-    console.log('[CACHE] get scholar info from cache');
+    console.log(`[CACHE] get scholar info from cache for ID: "${replaceId}"`);
     return cachedScholar;
   }
 
-  console.log('[OpenAlex] get scholar info from openalex api');
+  console.log(`[OpenAlex] get scholar info from openalex api for ID: "${replaceId}"`);
   const res = await fetch(`${BACKEND_ADDR}/scholars/${replaceId}`);
 
   if (!res.ok) {
-    throw new Error(`Failed to get scholar details: ${res.status}`);
+    throw new Error(`Failed to get scholar details for "${replaceId}": ${res.status}`);
   }
 
   const scholarData = await res.json();
