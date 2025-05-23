@@ -5,8 +5,11 @@
   "dependencies": {
     "@assemblyscript/loader": "^0.27.36",
     "@prisma/client": "^6.8.2",
+    "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
     "node-fetch": "^3.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
