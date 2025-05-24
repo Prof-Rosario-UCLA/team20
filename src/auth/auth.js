@@ -20,6 +20,7 @@ export const LoginForm = ({ onLogin, onCancel }) => {
   const [userPass, setUserPass] = useState('');
   const [formError, setFormError] = useState('');
   const [csrfToken, setCsrfToken] = useState('');
+  const [isSignedup, setIsSignedup] = useState(false);
   
   useEffect(() => {
   const randomBytes = crypto.getRandomValues(new Uint8Array(16));
@@ -31,7 +32,7 @@ export const LoginForm = ({ onLogin, onCancel }) => {
   sessionStorage.setItem('csrf', generatedToken);
 }, []);
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
 
     if (!userInput.trim() || !userPass) {
@@ -44,20 +45,39 @@ export const LoginForm = ({ onLogin, onCancel }) => {
       return;
     }
 
-    const createdTime = Date.now();
-    const authPayload = {userId: userInput, createdTime, expiresAt: createdTime + 360000};
-
-    const auth_token = btoa(JSON.stringify(authPayload));
+    const endpoint = isSignedup ? '/api/auth/signup' : '/api/auth/login';
     
-    document.cookie = `auth_token=${auth_token}; path=/; max-age=3600; SameSite=Strict`;
+    try {
+      const response = await fetch(`http://localhost:5001${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ userId: userInput, password: userPass })
+      });
 
-    onLogin(userInput);
+      if (response.ok) {
+        if (isSignedup) {
+          setFormError('');
+          alert('Sign up successful! Please login.');
+          setIsSignedup(false);
+        } else {
+          onLogin(userInput);
+        }
+      } else {
+        const data = await response.json();
+        setFormError(data.error);
+      }
+    } catch (error) {
+      setFormError('Request not successful. Please try again.');
+    }
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
       <div className="w-full max-w-sm bg-white p-5 rounded shadow-md">
-        <h2 className="text-lg font-semibold mb-4">Sign In</h2>
+        <h2 className="text-lg font-semibold mb-4">
+          {isSignedup ? 'Log In' : 'Sign Up'}
+        </h2>
 
         {formError && (
           <div className="text-sm bg-red-200 border border-red-400 text-red-800 px-3 py-2 rounded mb-3">
@@ -94,12 +114,22 @@ export const LoginForm = ({ onLogin, onCancel }) => {
             />
           </div>
 
+          <div className="flex justify-between items-center">
+            <button
+              type="button"
+              onClick={() => setIsSignedup(!isSignedup)}
+              className="text-blue-500"
+            >
+              {isSignedup ? 'Login' : 'Sign up'}
+            </button>
+          </div>
+
           <div className="flex justify-end gap-2">
             <button
               type="submit"
               className="bg-blue-600 text-white py-2 px-4 rounded"
             >
-              Sign In
+              {isSignedup ? 'Register' : 'Sign In'}
             </button>
             <button
               type="button"
@@ -115,14 +145,6 @@ export const LoginForm = ({ onLogin, onCancel }) => {
   );
 };
 
-const readCookie = (key) => {
-  const cookies = document.cookie.split('; ').map(c => c.split('='));
-  for (const [k, v] of cookies) {
-    if (k === key) return v;
-  }
-  return null;
-};
-
 export const authorize = () => {
   const [userID, setUserID] = useState(null);
   const [loginVisible, setLoginVisible] = useState(false);
@@ -134,38 +156,40 @@ export const authorize = () => {
       setAcceptCookies(true);
     }
 
-    const token = readCookie('auth_token');
-
-    if(!token){
-      return;
-    }
-
-    try {
-      const decoded = JSON.parse(atob(token));
-
-      if (decoded.exp > Date.now()) {
-        setUserID({ id: decoded.id });
-        localStorage.setItem('user_auth', decoded.id);
-      } else {
-        document.cookie = 'auth_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-        localStorage.removeItem('user_auth');
-      }
-    } catch (e) {
-      console.error('Invalid token');
-    }
-
+    checkAuth();
   }, []);
+
+  const checkAuth = async () => {
+    try {
+      const response = await fetch('http://localhost:5001/api/auth/me', {
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setUserID({ id: data.userId });
+      }
+    } catch (error) {
+      console.log('Not authenticated');
+    }
+  };
 
   const handleLogin = (id) => {
     setUserID({ id });
-    localStorage.setItem('user_auth', id);
     setLoginVisible(false);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await fetch('http://localhost:5001/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
+    } catch (error) {
+      console.log('Error in logout.');
+    }
+    
     setUserID(null);
-    localStorage.removeItem('user_auth');
-    document.cookie = 'auth_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
   };
 
   const acceptCookies = () => {
