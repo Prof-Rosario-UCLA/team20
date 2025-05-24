@@ -13,7 +13,10 @@ const JWT_SECRET = process.env.JWT_SECRET || 'dev-key';
 
 app.use(express.json());
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}));
 app.use(cookieParser());
 
 const openalex_address = 'https://api.openalex.org';
