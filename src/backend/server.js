@@ -122,4 +122,65 @@ app.get('/api/auth/me', (req, res) => {
   }
 });
 
+app.get('/api/favorites', async (req, res) => {
+  const token = req.cookies?.auth_token;
+  if (!token) return res.status(401).json({ error: 'Auth token is required' });
+
+  try {
+    const { userId } = jwt.verify(token, JWT_SECRET);
+
+    const user = await prisma.account.findUnique({
+      where: { userId },
+      include: { favorites: true }
+    });
+
+    if (!user) return res.status(404).json({ error: 'User does not exist' });
+
+    res.json(user.favorites);
+  } catch (err) {
+    res.status(500).json({ error: 'Internal server error: failed to get favorites' });
+  }
+});
+
+app.post('/api/favorites', async (req, res) => {
+  const token = req.cookies?.auth_token;
+  const { scholarId, scholarName } = req.body;
+
+  if (!token || !scholarId) {
+    return res.status(400).json({ error: 'token or scholarId required' });
+  }
+
+  try {
+    const { userId } = jwt.verify(token, JWT_SECRET);
+
+    const user = await prisma.account.findUnique({ where: { userId } });
+    if (!user) return res.status(404).json({ error: 'User does not exist' });
+
+    const exists = await prisma.favorite.findUnique({
+      where: {
+        accountId_scholarId: {
+          accountId: user.id,
+          scholarId
+        }
+      }
+    });
+
+    if (exists) {
+      return res.status(409).json({ error: 'Scholar already favorited' });
+    }
+
+    const favorite = await prisma.favorite.create({
+      data: {
+        accountId: user.id,
+        scholarId,
+        scholarName: scholarName
+      }
+    });
+
+    res.status(201).json(favorite);
+  } catch (err) {
+    res.status(500).json({ error: 'Internal server error: Failed to post favorite' });
+  }
+});
+
 module.exports = app;
