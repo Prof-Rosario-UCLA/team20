@@ -9,6 +9,7 @@ const ScholarDetail = ({ scholarId, onBack }) => {
   const [loading, setLoading] = useState(true);
   const [fail, setFail] = useState(false);
   const [activeTab, setActiveTab] = useState('chart');
+  const [isStar, setIsStar] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -17,7 +18,10 @@ const ScholarDetail = ({ scholarId, onBack }) => {
       setLoading(true);
       try {
         const res = await getScholarInfo(scholarId);
-        if (active) setData(res);
+        if (active) {
+          setData(res);
+          await getStar();
+        }
       } catch {
         if (active) setFail(true);
       } finally {
@@ -29,18 +33,81 @@ const ScholarDetail = ({ scholarId, onBack }) => {
     return () => { active = false };
   }, [scholarId]);
 
+  const getStar = async () => {
+    try {
+      const res = await fetch('/api/favorites', {
+        credentials: 'include'
+      });
+
+      if (!res.ok) return;
+
+      const favoriteList = await res.json();
+      const matched = favoriteList.some(item => item.scholarId === scholarId);
+      setIsStar(matched);
+    } catch (err) {
+      console.error('Failed to fetch favorites:', err);
+    }
+  };
+
+  const postStar = async () => {
+    if (!data || isStar) return;
+
+    try {
+      const res = await fetch('/api/favorites', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          scholarId,
+          scholarName: data.display_name
+        })
+      });
+
+      if (res.ok) {
+        setIsStar(true);
+      } else {
+        const msg = await res.json();
+        console.error('Could not add favorite:', msg);
+      }
+    } catch (err) {
+      console.error('Star toggle failed:', err);
+    }
+  };
+
+
   if (loading) return <div className="py-8 text-center text-gray-500">Loading...</div>;
   if (fail) return <div className="p-4 border border-red-300 bg-red-100 text-red-700">Error loading profile.</div>;
   if (!data) return null;
 
   return (
     <div className="bg-white border border-gray-300 p-6 rounded-md shadow-sm h-full flex flex-col">
-      <button
-        onClick={onBack}
-        className="mb-4 text-sm text-blue-600 hover:underline"
-      >
-        ← Back
-      </button>
+      <div className="flex items-center justify-between mb-4">
+        <button
+          onClick={onBack}
+          className="mb-4 text-sm text-blue-600 hover:underline"
+        >
+          ← Back
+        </button>
+
+        <button
+          onClick={postStar}
+          disabled={isStar}
+          className={
+            isStar
+              ? 'px-3 py-1 rounded text-sm bg-yellow-200 text-yellow-800'
+              : 'px-3 py-1 rounded text-sm bg-blue-200 text-blue-800'
+          }
+        >
+          <span className="mr-1 text-lg">
+            {isStar ? '⭐' : '☆'}
+          </span>
+          {isStar ? 'Favorited' : 'Add to Favorite'}
+        </button>
+
+
+      </div>
 
       <h2 className="text-2xl font-semibold mb-1">{data.display_name}</h2>
 
@@ -64,17 +131,17 @@ const ScholarDetail = ({ scholarId, onBack }) => {
           )}
         </div>
       </div>
-      
+
       <WasmStats scholarData={data} />
-      
+
       <div className="flex border-b mb-2">
-        <button 
+        <button
           className={`px-3 ${activeTab === 'chart' ? 'border-b-2 border-blue-600 font-medium' : 'text-gray-500'}`}
           onClick={() => setActiveTab('chart')}
         >
           Citation Trends
         </button>
-        <button 
+        <button
           className={`px-3 ${activeTab === 'publications' ? 'border-b-2 border-blue-600 font-medium' : 'text-gray-500'}`}
           onClick={() => setActiveTab('publications')}
         >
@@ -88,18 +155,18 @@ const ScholarDetail = ({ scholarId, onBack }) => {
             <CitationChart scholarData={data} />
           </div>
         )}
-        
+
         {activeTab === 'publications' && (
           <div className="h-full">
             <h3 className="text-lg font-bold mb-2">Recent Publications</h3>
-              <div className="space-y-2">
-                {data.works.map((w, i) => (
-                  <div key={i} className="p-2 border bg-gray-50">
-                    <p>{w.title}</p>
-                    <p className="text-xs text-gray-500">{w.publication_year}</p>
-                  </div>
-                ))}
-              </div>
+            <div className="space-y-2">
+              {data.works.map((w, i) => (
+                <div key={i} className="p-2 border bg-gray-50">
+                  <p>{w.title}</p>
+                  <p className="text-xs text-gray-500">{w.publication_year}</p>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
