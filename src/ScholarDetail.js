@@ -4,6 +4,8 @@ import { getScholarInfo } from './openAlex/api';
 import CitationChart from './canvasViz';
 import WasmStats from './wasmStats';
 
+const BACKEND_ADDR = process.env.APP_ADDRESS || 'http://localhost:5001/api';
+
 const ScholarDetail = ({ scholarId, onBack }) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -35,7 +37,7 @@ const ScholarDetail = ({ scholarId, onBack }) => {
 
   const getStar = async () => {
     try {
-      const res = await fetch('/api/favorites', {
+      const res = await fetch(`${BACKEND_ADDR}/favorites`, {
         credentials: 'include'
       });
 
@@ -53,7 +55,7 @@ const ScholarDetail = ({ scholarId, onBack }) => {
     if (!data || isStar) return;
 
     try {
-      const res = await fetch('/api/favorites', {
+      const res = await fetch(`${BACKEND_ADDR}/favorites`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
