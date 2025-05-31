@@ -32,7 +32,7 @@ const App = () => {
     }
   };
 
-  const clearOptions = () => {setQuery(''); setResults([]); setError(null); setActiveScholarId(null);};
+  const clearOptions = () => { setQuery(''); setResults([]); setError(null); setActiveScholarId(null); };
 
   const selectScholar = (scholar) => {
     setActiveScholarId(scholar.id);
@@ -44,12 +44,12 @@ const App = () => {
 
   return (
     <div className="fixed inset-0 flex flex-col bg-gray-50 text-gray-800 overflow-hidden">
-      {loginVisible && ( <LoginForm 
-          onLogin={handleLogin} 
-          onCancel={() => setLoginVisible(false)} 
-        />
+      {loginVisible && (<LoginForm
+        onLogin={handleLogin}
+        onCancel={() => setLoginVisible(false)}
+      />
       )}
-      
+
       {askAcceptCookies && (<CookieNotice onAccept={acceptCookies} />)}
 
       <header className="bg-blue-700 text-white py-2 px-4 shadow flex items-center justify-between">
@@ -58,7 +58,7 @@ const App = () => {
           {userID ? (
             <div className="flex items-center">
               <span className="mr-2">User: {userID.id}</span>
-              <button 
+              <button
                 onClick={handleLogout}
                 className="bg-blue-700 px-4 py-2 hover:bg-blue-800"
               >
@@ -66,7 +66,7 @@ const App = () => {
               </button>
             </div>
           ) : (
-            <button 
+            <button
               onClick={() => setLoginVisible(true)}
               className="bg-blue-700 px-4 py-2 rounded hover:bg-blue-800"
             >
@@ -77,6 +77,21 @@ const App = () => {
       </header>
 
       <main className="flex-grow flex flex-col p-3 overflow-hidden">
+        {!userID && (
+          <div className="p-2 mb-3 rounded-md border bg-blue-100">
+            <p className="text-sm text-blue-900">
+              🔍 Explore and track scholars without an account.
+              <button
+                onClick={() => setLoginVisible(true)}
+                className="ml-2 underline"
+              >
+                Sign in
+              </button>
+              {' '}if you would like to keep track of your favorites.
+            </p>
+          </div>
+        )}
+
         {!activeScholarId ? (
           <>
             <section aria-label="Scholar Search" className="mb-2">
