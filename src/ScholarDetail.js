@@ -84,7 +84,7 @@ const ScholarDetail = ({ scholarId, onBack }) => {
   if (!data) return null;
 
   return (
-    <div className="bg-white border border-gray-300 p-6 rounded-md shadow-sm h-full flex flex-col">
+    <div className="bg-white border border-gray-300 p-6 rounded-md shadow-sm h-full flex flex-col overflow-hidden">
       <div className="flex items-center justify-between mb-4">
         <button
           onClick={onBack}
@@ -153,7 +153,7 @@ const ScholarDetail = ({ scholarId, onBack }) => {
 
       <div className="flex-1">
         {activeTab === 'chart' && (
-          <div className="h-full">
+          <div className="h-full overflow-hidden">
             <CitationChart scholarData={data} />
           </div>
         )}

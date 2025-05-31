@@ -72,10 +72,10 @@ const CitationTrendChart = ({ scholarData }) => {
   return (
     <div className="my-6">
       <h3 className="text-base font-medium mb-3">Citation Trends</h3>
-      <div className="bg-blue-50 p-3 border">
+      <div className="bg-blue-50 p-3 border overflow-hidden">
         <canvas
           ref={canvasRef}
-          className="w-full h-72"
+          className="w-full"
           style={{ width: '100%', height: '300px' }}
           aria-label="Citations Over the Past 5 Years"
         />

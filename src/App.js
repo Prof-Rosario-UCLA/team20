@@ -11,6 +11,7 @@ const App = () => {
   const [results, setResults] = useState([]);
   const [error, setError] = useState(null);
   const [activeScholarId, setActiveScholarId] = useState(null);
+  const [bannerVisible, setBannerVisible] = useState(true);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -83,18 +84,25 @@ const App = () => {
       </header>
 
       <main className="flex-grow flex flex-col p-3 overflow-hidden">
-        {!userID && (
-          <div className="p-2 mb-3 rounded-md border bg-blue-100">
+        {!userID && bannerVisible && (
+          <div className="p-2 mb-3 rounded-md border bg-blue-100 flex justify-between items-center">
             <p className="text-sm text-blue-900">
               🔍 Explore and track scholars without an account.
               <button
                 onClick={() => setLoginVisible(true)}
-                className="ml-2 underline"
+                className="ml-2 underline hover:text-blue-700"
               >
                 Sign in
               </button>
               {' '}if you would like to keep track of your favorites.
             </p>
+            <button 
+              onClick={() => setBannerVisible(false)}
+              className="text-blue-600 hover:text-blue-800 ml-2 text-lg leading-none"
+              aria-label="Dismiss banner"
+            >
+              ✕
+            </button>
           </div>
         )}
 
