@@ -19,29 +19,13 @@ export const LoginForm = ({ onLogin, onCancel }) => {
   const [userInput, setUserInput] = useState('');
   const [userPass, setUserPass] = useState('');
   const [formError, setFormError] = useState('');
-  const [csrfToken, setCsrfToken] = useState('');
   const [isSignedup, setIsSignedup] = useState(false);
-  
-  useEffect(() => {
-  const randomBytes = crypto.getRandomValues(new Uint8Array(16));
-  const generatedToken = [...randomBytes]
-    .map(byte => byte.toString(16).padStart(2, '0'))
-    .join('');
-
-  setCsrfToken(generatedToken);
-  sessionStorage.setItem('csrf', generatedToken);
-}, []);
 
   const submitHandler = async (e) => {
     e.preventDefault();
 
     if (!userInput.trim() || !userPass) {
       setFormError('Both fields must be filled out.');
-      return;
-    }
-
-    if (csrfToken !== sessionStorage.getItem('csrf')) {
-      setFormError('Unverified Request.');
       return;
     }
 
@@ -86,8 +70,6 @@ export const LoginForm = ({ onLogin, onCancel }) => {
         )}
 
         <form onSubmit={submitHandler}>
-          <input type="hidden" name="_csrf" value={csrfToken} />
-
           <div className="mb-3">
             <label className="text-sm text-gray-700 block mb-1">Username</label>
             <input

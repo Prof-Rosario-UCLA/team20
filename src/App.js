@@ -11,22 +11,11 @@ const App = () => {
   const [results, setResults] = useState([]);
   const [error, setError] = useState(null);
   const [activeScholarId, setActiveScholarId] = useState(null);
-  const [csrfToken, setCsrfToken] = useState('');
-
-  useEffect(() => {
-    const token = sessionStorage.getItem('csrf');
-    setCsrfToken(token || '');
-  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const trimmed = query.trim();
     if (!trimmed) return;
-
-    if (csrfToken !== sessionStorage.getItem('csrf')) {
-      setError('Security validation failed');
-      return;
-    }
 
     setLoading(true);
     setError(null);
@@ -95,8 +84,6 @@ const App = () => {
               <p className="text-sm text-gray-600 mb-2">Search your scholar of interest.</p>
 
               <form onSubmit={handleSubmit} className="flex gap-3 items-center">
-                <input type="hidden" name="_csrf" value={csrfToken} />
-                
                 <input
                   type="text"
                   className="flex-grow h-8 px-2 border border-gray-300 rounded-lg"

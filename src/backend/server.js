@@ -98,7 +98,7 @@ app.post('/api/auth/login', async (req, res) => {
   }
 
   const token = jwt.sign({ userId }, JWT_SECRET);
-  res.cookie('auth_token', token, { httpOnly: true });
+  res.cookie('auth_token', token, { httpOnly: true, sameSite: 'strict' });
   res.json({ success: true });
 });
 
