@@ -53,7 +53,13 @@ const App = () => {
       {askAcceptCookies && (<CookieNotice onAccept={acceptCookies} />)}
 
       <header className="bg-blue-700 text-white py-2 px-4 shadow flex items-center justify-between">
-        <h1 className="text-xl font-bold truncate">Academic Scholars Profile Explorer</h1>
+        <button
+          onClick={clearOptions}
+          className="text-xl font-bold truncate hover:underline"
+        >
+          Academic Scholars Profile Explorer
+        </button>
+
         <div>
           {userID ? (
             <div className="flex items-center">
