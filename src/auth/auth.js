@@ -32,7 +32,7 @@ export const LoginForm = ({ onLogin, onCancel }) => {
     const endpoint = isSignedup ? '/api/auth/signup' : '/api/auth/login';
     
     try {
-      const response = await fetch(`http://localhost:5001${endpoint}`, {
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -143,7 +143,7 @@ export const authorize = () => {
 
   const checkAuth = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/auth/me', {
+      const response = await fetch('/api/auth/me', {
         credentials: 'include'
       });
       
@@ -163,7 +163,7 @@ export const authorize = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch('http://localhost:5001/api/auth/logout', {
+      await fetch('/api/auth/logout', {
         method: 'POST',
         credentials: 'include'
       });
