@@ -7,3 +7,6 @@ env_variables:
   JWT_SECRET: $JWT_SECRET
   APP_ADDRESS: https://cs144-25s-yurikim.appspot.com/api
   DATABASE_URL: $DATABASE_URL
+
+automatic_scaling:
+  max_instances: 2
