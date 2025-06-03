@@ -41,6 +41,7 @@ jobs:
         project_id: cs144-25s-yurikim
     
     - name: Final Deploy
-      run: |
-        gcloud app deploy --quiet \
-          --set-env-vars="JWT_SECRET=${{ secrets.JWT_SECRET }},DATABASE_URL=${{ secrets.DATABASE_URL }}"
+      run: gcloud app deploy --quiet
+      env:
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
