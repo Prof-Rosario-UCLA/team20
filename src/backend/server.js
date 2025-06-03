@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const prisma = require('../../prisma/client');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -14,7 +15,9 @@ const JWT_SECRET = process.env.JWT_SECRET || 'dev-key';
 app.use(express.json());
 app.use(helmet());
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: process.env.NODE_ENV === 'production' 
+    ? 'https://cs144-25s-yurikim.appspot.com'
+    : 'http://localhost:3000',
   credentials: true
 }));
 app.use(cookieParser());
@@ -64,10 +67,6 @@ app.get('/api/scholars/:id', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: 'Internal server error' });
   }
-});
-
-app.listen(PORT, () => {
-  console.log(`Server is on port ${PORT}`);
 });
 
 app.post('/api/auth/signup', async (req, res) => {
@@ -181,6 +180,16 @@ app.post('/api/favorites', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: 'Internal server error: Failed to post favorite' });
   }
+});
+
+app.use(express.static(path.join(__dirname, '../../build')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../build/index.html'));
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is on port ${PORT}`);
 });
 
 module.exports = app;

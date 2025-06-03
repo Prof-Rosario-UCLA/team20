@@ -1,0 +1,9 @@
+runtime: nodejs20
+
+entrypoint: node src/backend/server.js
+
+env_variables:
+  NODE_ENV: production
+  JWT_SECRET: $JWT_SECRET
+  APP_ADDRESS: https://cs144-25s-yurikim.appspot.com/api
+  DATABASE_URL: $DATABASE_URL
