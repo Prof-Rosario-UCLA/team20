@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(helmet());
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? 'https://cs144-25s-yurikim.appspot.com'
+    ? 'https://cs144-25s-yurikim.uw.r.appspot.com'
     : 'http://localhost:3000',
   credentials: true
 }));
