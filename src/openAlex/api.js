@@ -3,7 +3,7 @@
 // https://docs.openalex.org/api-entities/authors/author-object
 import * as cache from '../utils/cache';
 
-const BACKEND_ADDR = process.env.APP_ADDRESS || 'http://localhost:5001/api';
+const BACKEND_ADDR = process.env.NODE_ENV === 'production' ? '/api': 'http://localhost:5001/api';
 
 export const fetchScholars = async (searchTerm) => {
   if (!searchTerm.trim()) return [];

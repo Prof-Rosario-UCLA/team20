@@ -5,7 +5,6 @@ entrypoint: node src/backend/server.js
 env_variables:
   NODE_ENV: production
   JWT_SECRET: $JWT_SECRET
-  APP_ADDRESS: https://cs144-25s-yurikim.uw.r.appspot.com/api
   DATABASE_URL: $DATABASE_URL
 
 automatic_scaling:

@@ -4,7 +4,7 @@ import { getScholarInfo } from './openAlex/api';
 import CitationChart from './canvasViz';
 import WasmStats from './wasmStats';
 
-const BACKEND_ADDR = process.env.APP_ADDRESS || 'http://localhost:5001/api';
+const BACKEND_ADDR = process.env.NODE_ENV === 'production' ? '/api': 'http://localhost:5001/api';
 
 const ScholarDetail = ({ scholarId, onBack }) => {
   const [data, setData] = useState(null);
