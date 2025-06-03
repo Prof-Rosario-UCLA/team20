@@ -18,7 +18,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "asbuild": "asc assembly/index.ts --target release"
+    "asbuild": "asc assembly/index.ts --target release",
+    "test": "react-scripts test --passWithNoTests"
   },
   "browserslist": {
     "production": [
