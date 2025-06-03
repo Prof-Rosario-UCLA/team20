@@ -34,14 +34,26 @@ jobs:
       uses: google-github-actions/auth@v2
       with:
         credentials_json: ${{ secrets.GCP_SA_KEY }}
-    
+
     - name: Setup gcloud
       uses: google-github-actions/setup-gcloud@v2
       with:
         project_id: cs144-25s-yurikim
-    
-    - name: Final Deploy
-      run: gcloud app deploy --quiet
-      env:
-        JWT_SECRET: ${{ secrets.JWT_SECRET }}
-        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+    - name: Write App.yaml with env vars
+      run: |
+        cat <<EOF > app.yaml
+        runtime: nodejs20
+        entrypoint: node src/backend/server.js
+
+        env_variables:
+          NODE_ENV: production
+          JWT_SECRET: '${{ secrets.JWT_SECRET }}'
+          DATABASE_URL: '${{ secrets.DATABASE_URL }}'
+
+        automatic_scaling:
+          max_instances: 2
+        EOF
+
+    - name: Final deploy
+      run: gcloud app deploy app.yaml --quiet
