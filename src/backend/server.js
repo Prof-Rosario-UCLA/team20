@@ -13,7 +13,14 @@ const PORT = process.env.PORT || 5001;
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-key';
 
 app.use(express.json());
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'"]
+    }
+  }
+}));
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
     ? 'https://cs144-25s-yurikim.uw.r.appspot.com'
