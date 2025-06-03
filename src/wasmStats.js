@@ -66,24 +66,33 @@ const calculateCits = async (scholarData) => {
 
 const WasmStats = ({ scholarData }) => {
   const [citations, setCitations] = useState(null);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    initWasm();
+    const loadWasm = async () => {
+      const ready = await initWasm();
+      setIsReady(ready);
+    };
+    loadWasm();
   }, []);
 
   useEffect(() => {
+    if (!isReady || !scholarData) return;
+
     const load = async () => {
       const result = await calculateCits(scholarData);
       setCitations(result.totalCitations);
     };
 
     load();
-  }, [scholarData]);
+  }, [scholarData, isReady]);
 
   return (
     <div className="border border-gray-200 p-4 rounded">
       <div className="text-sm text-gray-600 mb-1">Citations for recent 10 years</div>
-      <div className="text-xl font-semibold text-gray-900">{citations}</div>
+      <div className="text-xl font-semibold text-gray-900">
+        {citations !== null ? citations : 'Loading...'}
+      </div>
     </div>
   );
 };
