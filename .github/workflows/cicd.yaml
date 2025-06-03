@@ -21,6 +21,9 @@ jobs:
     - name: Install packages
       run: npm ci
     
+    - name: Run tests
+      run: npm test
+    
     - name: Prepare application
       run: |
         npx prisma generate
