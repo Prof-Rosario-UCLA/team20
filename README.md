@@ -85,18 +85,93 @@ model Favorite {
 ## API Endpoints
 
 ### Authentication
-- `POST /api/auth/signup` - Create new user
-- `POST /api/auth/login` - Log in
-- `POST /api/auth/logout` - Log out
-- `GET /api/auth/me` - Fetch logged-in user data
+#### `POST /api/auth/signup` - Create new user
+
+**Request Body:**
+```json
+{
+  "userId": "string",
+  "password": "string"
+}
+```
+
+#### `POST /api/auth/login` - Log in
+
+**Request Body:**
+```json
+{
+  "userId": "string", 
+  "password": "string"
+}
+```
+
+#### `POST /api/auth/logout` - Log out
+
+#### `GET /api/auth/me` - Fetch logged-in user data
+
+**Authentication:** Requires auth_token cookie
+
+**Response:**
+```json
+{
+  "userId": "string"
+}
+```
 
 ### Scholars
-- `GET /api/scholars?query={term}` - Search for scholars
-- `GET /api/scholars/:id` - View detailed scholar profile
+#### `GET /api/scholars?query={term}` - Search for scholars
+
+**Query Parameters:**
+- `query` (required): Search term for scholar names
+
+**Example:**
+```
+GET /api/scholars?query=einstein
+```
+
+#### `GET /api/scholars/:id` - View detailed scholar profile
+
+**Path Parameters:**
+- `id` (required): Scholar ID from OpenAlex
+
+**Response:**
+```json
+{
+  ...scholarProfile,
+  "works": [
+    // Fetches up to 5
+  ]
+}
+```
 
 ### Favorites
-- `GET /api/favorites` - Get user's favorites (auth required)
-- `POST /api/favorites` - Add scholar to favorites (auth required)
+#### `GET /api/favorites` - Get user's favorites (auth required)
+
+**Authentication:** Requires auth_token cookie
+
+**Response:**
+```json
+[
+  {
+    "id": "number",
+    "scholarId": "string",
+    "scholarName": "string",
+    "accountId": "number"
+  }
+]
+```
+
+#### `POST /api/favorites` - Add scholar to favorites (auth required)
+
+**Authentication:** Requires auth_token cookie
+
+**Request Body:**
+```json
+{
+  "scholarId": "string",
+  "scholarName": "string"
+}
+```
 
 ## Deployment
 
